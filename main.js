@@ -1,8 +1,8 @@
-import puppeteer from 'puppeteer';
-import fs from 'fs';
-import fsp from 'fs/promises';
+const puppeteer = require('puppeteer');
+const fs = require('fs');
+const fsp = require('fs').promises;
 
-var dateToEnd = new Date('Sept 26 2024')
+var dateToEnd = new Date('Jan 1 2024')
 var dateValid = true
 
 function sleep(){
@@ -10,7 +10,7 @@ function sleep(){
 }
 
 async function toClick(){
-    const browser = await puppeteer.launch({headless: false});
+    const browser = await puppeteer.launch({headless: true, timeout: 300000000});
     const page = await browser.newPage();
 
     await page.goto('https://sea.mashable.com/');
@@ -84,7 +84,7 @@ async function toClick(){
 
             const datePublished = new Date(timeElement.innerText.replace(/[.,]/g, ''));
             
-            if(datePublished < dateToEnd) return
+            if(datePublished.getTime() < dateToEnd) return
 
             results.push({
                 caption: caption,
@@ -101,26 +101,4 @@ async function toClick(){
     console.log('Headlines saved to headlines.json');
 }
 
-async function display(){
-    let response = await fsp.readFile('headlines.json')
-    let headlines = JSON.parse(response)
-    console.log(headlines)
-    const list = document.getElementById('articles')
-    headlines.forEach(headline => {
-        const li = document.createElement('li')
-        const a = document.createElement('a')
-        a.href = headline.link
-        a.textContent = headline.caption
-        li.appendChild(a)
-        list.appendChild(li)
-})
-}
-
-async function main(){
-    await toClick()
-    display()
-}
-
-main()
-
-
+toClick()

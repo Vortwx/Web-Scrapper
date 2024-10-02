@@ -4,10 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title Aggregator</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Headlines</h1>
     <ul id="articles"></ul>
-    <script src="main.js"></script>
+    <script>
+        async function display(){
+            let response = await fetch('headlines.json')
+            let headlines = await response.json()
+            console.log(headlines)
+            const list = document.getElementById('articles')
+            headlines.forEach(headline => {
+                const li = document.createElement('li')
+                const a = document.createElement('a')
+                a.href = headline.link
+                a.textContent = headline.caption
+                li.appendChild(a)
+                list.appendChild(li)
+            })
+        }
+        display()
+    </script>
 </body>
 </html>
